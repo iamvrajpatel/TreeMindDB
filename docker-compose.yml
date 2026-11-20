@@ -1,0 +1,13 @@
+services:
+  backend:
+    build: ./backend
+    ports: ["127.0.0.1:8000:8000"]
+    volumes: ["./data:/data"]
+    environment:
+      CORS_ORIGINS: http://localhost:3000
+  frontend:
+    build: ./frontend
+    ports: ["127.0.0.1:3000:3000"]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+    depends_on: [backend]

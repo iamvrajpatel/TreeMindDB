@@ -1,0 +1,26 @@
+from __future__ import annotations
+from typing import Protocol, Sequence
+import numpy as np
+from app.domain.models import CollectionConfig, TreeNode
+
+class EmbeddingProvider(Protocol):
+    model_id: str
+    dimension: int
+    def embed(self, texts: Sequence[str]) -> np.ndarray: ...
+
+class DecisionRouter(Protocol):
+    def rank_children(self, query: str, parent: TreeNode, children: Sequence[TreeNode]) -> list[tuple[str, float]]: ...
+
+class GenerationProvider(Protocol):
+    def generate(self, prompt: str) -> str: ...
+
+class DocumentExtractor(Protocol):
+    def extract(self, content: bytes, filename: str) -> list[tuple[str, int | None]]: ...
+
+class VectorStore(Protocol):
+    def append(self, collection_id: str, vectors: np.ndarray) -> list[int]: ...
+    def read(self, collection_id: str, offsets: Sequence[int], dimension: int) -> np.ndarray: ...
+
+class TreeRepository(Protocol):
+    def get_collection(self, collection_id: str) -> CollectionConfig | None: ...
+    def get_nodes(self, collection_id: str) -> list[TreeNode]: ...
